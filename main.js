@@ -1,27 +1,11 @@
-// Credit to KingCodeFish for the boilerplate this project is based on
-
-/**
-  * 
-  * @button(
-  *     @x - x position of center of button
-  *     @y - y position of center of button
-  *     @wid - The width of the button
-  *     @hei - The height of the button
-  *     @radius - The radius of the button
-  *     @tex - The text to be displayed in the button in the form of a string
-  *     @textSi - The text size of the text to be displayed in the button
-  *     @textFill - The color to fill the text with.
-  *     @hoverTextFill - The hover color of the text.
-  *     @fi - The background fill of the button.
-  *     @hoverFi - The hover background fill of the button.
-  *     @stro - The stroke color of the button.
-  *     @stroWei - The stroke weight of the button.
-  *     @hoverStro - The hover stroke color of the button.
-  *     @hoverStroWei - The hover stroke weight of the button.
-  * );
-  * 
-**/
-
+/**************************************
+ * Shadows of Seven
+ * Created on Saturday, September 12th, 2015
+ * Made by Indie and his awesome partners
+ * 
+ * Thanks to KCF for the boilerplate on GitHub
+ * Want to join ____________? Simply go here: https://www.khanacademy.org/computer-programming/indies-collaboration-team/6679584874561536
+ */
 
 /* --- GLOBAL VARIABLES --- */
 var gameStateNumber = 0;
@@ -124,7 +108,7 @@ var menu = function() {
     text("Shadows Of\nSeven", 245, 86);
     fill(255, 255, 255);
     stroke(0, 0, 0);
-    rect(0, 164, 400, 30);
+    rect(6, 164, 390, 30);
     textSize(20);
     fill(0, 0, 0);
     text("A GAME by Indie Productions", 201, 180);
@@ -162,8 +146,11 @@ var menu = function() {
 var help = function() {
     rectMode(CORNER);
     homeScreenDrop();
-    textSize(100);
     
+    fill(0, 0, 0, 70);
+    rect(0, 0, 400, 400);
+    
+    textSize(100);
     fill(255, 255, 255);
     text("Help", 201, 50);
     
@@ -175,8 +162,11 @@ var help = function() {
 var credits = function() {
     rectMode(CORNER);
     homeScreenDrop();
-    textSize(100);
     
+    fill(0, 0, 0, 70);
+    rect(0, 0, 400, 400);
+    
+    textSize(100);
     fill(255, 255, 255);
     text("Credits", 201, 50);
     
