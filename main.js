@@ -27,7 +27,6 @@
 var gameStateNumber = 0;
 var keys = [];
 var mouseOverButton = "";
-var bgColor = color(255, 255, 255);
 
 /* --- BUTTON FUNCTION --- */
 var button = function(x, y, wid, hei, radius, tex, textSi, textFill, hoverTextFill, fi, hoverFi, stro, stroWei, hoverStro, hoverStroWei) {
