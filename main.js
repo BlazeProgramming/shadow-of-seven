@@ -93,15 +93,8 @@ var menu = function() {
     noStroke();
     homeScreenDrop();
     
-    fill(0, 0, 0, 100);
-    pushMatrix();
-        translate(1, 267);
-        triangle(0, 14, -2, 1038, 412, 103);
-    popMatrix();
-    pushMatrix();
-        translate(-52, -54);
-        triangle(52, 142, 457, 55, 50, 50);
-    popMatrix();
+    fill(255, 0, 0, 150);
+    rect(95, 26, 298, 124);
     textFont(createFont("Tahoma Bold"));
     textSize(45);
     fill(0);
@@ -113,11 +106,7 @@ var menu = function() {
     rect(6, 164, 390, 30);
     textSize(20);
     fill(0, 0, 0);
-    text("A GAME by Indie Productions", 201, 180);
-    noFill();
-    strokeWeight(3);
-    stroke(0, 0, 0);
-    rect(95, 26, 298, 124);
+    text("A GAME by Indie Productions", 201, 178);
     button(320, 250, 130, 33, 10, "Play", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 290, 130, 33, 10, "Options", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 330, 130, 33, 10, "Credits", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
@@ -143,6 +132,15 @@ var menu = function() {
         rect(30, 30, 60, 3);
         rect(30, 50, 45, 3);
         rect(30, 70, 60, 3);
+    popMatrix();
+    fill(0, 0, 0, 100);
+    pushMatrix();
+        translate(1, 267);
+        triangle(0, 14, -2, 1038, 412, 103);
+    popMatrix();
+    pushMatrix();
+        translate(-52, -54);
+        triangle(52, 142, 457, 55, 50, 50);
     popMatrix();
 }; // Draw the main menu screen in here, this is an example menu
 var help = function() {
