@@ -191,6 +191,12 @@ var level01 = function() {
 }; // Draw the first level in here
 
 /* --- RENDERING AND INPUT --- */
+keyPressed = function() {
+    keys[keyCode] = true;
+};
+keyPressed = function() {
+    keys[keyCode] = false;
+};
 mouseReleased = function() {
     switch(mouseOverButton) {
         case "Play": // Change this to correspond with the button text of the button you want to perform the action on.
