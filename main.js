@@ -222,8 +222,11 @@ var help = function() {
     rect(0, 0, 400, 400);
     
     textSize(100);
-    fill(255, 255, 255);
+    fill(0);
+    text("Help", 194, 55);
+    fill(255);
     text("Help", 201, 50);
+    
     
     textSize(30);
     text("Write Text Here", 201, 201);
@@ -238,7 +241,9 @@ var credits = function() {
     rect(0, 0, 400, 400);
     
     textSize(100);
-    fill(255, 255, 255);
+    fill(0);
+    text("Credits", 195, 54);
+    fill(255);
     text("Credits", 201, 50);
     
     textSize(20);
