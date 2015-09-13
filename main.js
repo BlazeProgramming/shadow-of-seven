@@ -3,10 +3,10 @@
  * Created on Saturday, September 12th, 2015
  * Made by Indie and his awesome partners
  * 
- * Thanks to KCF for the boilerplate on GitHub. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
- * Want to join ____________? Simply go here: https://www.khanacademy.org/computer-programming/indies-collaboration-team/6679584874561536
- * 
+ * Thanks to KCF for the boilerplate and KCF.JS for some visual effects. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
  * Thank you SO MUCH Emory for his Disaster Studios logo. You are an amazing coder, like everyone else on KA. Check out his programs here: https://www.khanacademy.org/profile/DisasterStudios2/ 
+ * 
+ * Want to join ____________? Simply go here: https://www.khanacademy.org/computer-programming/indies-collaboration-team/6679584874561536
  * 
  */
 
@@ -14,6 +14,11 @@
 var gameStateNumber = 0;
 var keys = [];
 var mouseOverButton = "";
+
+
+/* --- KCF.JS --- Minified Version --- */
+var poly=function(array){beginShape();for(var i=0;i<array.length;i++){vertex(array[i][0],array[i][1]);}
+endShape();};var rectGradient=function(x,y,width,height,from,to){for(var i=0;i<width;i++){stroke(lerpColor(from,to,i / width));line(x+i,y,x+i,y+height);}};var ellipseGradient=function(x,y,width,height,from,to,type,endGrad){if(type==="falloff"){ellipseMode(CENTER);noStroke();var gradientBars=endGrad-width;for(var i=0;i<gradientBars;i++){var sectionWidth=(gradientBars-i)+width;fill(lerpColor(from,to,i / gradientBars));ellipse(x,y,sectionWidth+width,sectionWidth+height);}}else if(type==="linear"){for(var i=0;i<1;i+=0.001){var sx=lerp(x,x+width*2,i);var c=lerpColor(from,to,i);stroke(c);line(sx,y+height*sqrt(1-sq(2*i-1)),sx,y-height*sqrt(1-sq(2*i-1)));}}};var font=function(font,size,api,fill,align){if(api===undefined){textFont(createFont(font),size);}};
 
 /* --- BUTTON FUNCTION --- */
 var button = function(x, y, wid, hei, radius, tex, textSi, textFill, hoverTextFill, fi, hoverFi, stro, stroWei, hoverStro, hoverStroWei) {
