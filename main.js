@@ -3,8 +3,8 @@
  * Created on Saturday, September 12th, 2015
  * Made by Indie and his awesome partners
  * 
- * Thanks to KCF for the boilerplate and KCF.JS for some visual effects. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
- * Thank you SO MUCH Emory for his Disaster Studios logo. You are an amazing coder, like everyone else on KA. Check out his programs here: https://www.khanacademy.org/profile/DisasterStudios2/ 
+ * Thanks to KCF for the boilerplate, KCF.JS for some visual effects, and a lot of the game mechanics. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
+ * Thanks SO MUCH to Emory for his Disaster Studios logo. You are an amazing coder, like everyone else on KA. Check out his programs here: https://www.khanacademy.org/profile/DisasterStudios2/ 
  * 
  * Want to join ____________? Simply go here: https://www.khanacademy.org/computer-programming/indies-collaboration-team/6679584874561536
  * 
@@ -14,7 +14,14 @@
 var gameStateNumber = 0;
 var keys = [];
 var mouseOverButton = "";
-
+var waitDelay = 255;
+var textScroller = "";
+var textFill = "";
+var textEff = 0;
+var canMoveLeft = true;
+var canMoveRight = true;
+var canJump = true;
+var canFall = true;
 
 /* --- KCF.JS --- Minified Version --- */
 var poly=function(array){beginShape();for(var i=0;i<array.length;i++){vertex(array[i][0],array[i][1]);}
@@ -94,6 +101,76 @@ var homeScreenDrop = function(homeScrBackground) {
 
 };
 
+/* --- NINJAS --- */
+var Ninja = function(ninjaType, x, y, size, rot, speedMarks) {
+    this.ninjaType = ninjaType;
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.rot = rot;
+    this.speedMarks = speedMarks;
+};
+Ninja.prototype.draw = function() {
+    switch(this.ninjaType) {
+        case 1:
+            rectMode(CENTER);
+            noStroke();
+            pushMatrix();
+                translate(this.x, this.y);
+                scale(this.size / 100);
+                rotate(this.rot);
+                fill(0, 0, 0);
+                rect(0, 0, 60, 60, 10);
+                fill(255, 255, 255);
+                ellipse(-12, -2, 10, 10);
+                ellipse(12, -2, 10, 10);
+                fill(255, 0, 0);
+                rect(0, -20, 60, 10);
+                fill(255, 0, 0);
+                triangle(-45, -38, -30, -20, -35, 5);
+            popMatrix();
+            if(this.speedMarks) {
+                pushMatrix();
+                    translate(this.x, this.y);
+                    scale(this.size / 100);
+                    rotate(this.rot);
+                    fill(255, 255, 255);
+                    rect(-80, -20, 60, 3);
+                    rect(-88, 0, 45, 3);
+                    rect(-80, 20, 60, 3);
+                popMatrix();
+            }
+            break;
+    }
+};
+var ninjaPos = [200, 200];
+var menuNinja = new Ninja(1, 135, 265, 100, 11, true);
+var Block = function(x, y) {
+    this.x = x;
+    this.y = y;
+    
+    if(ninjaPos[0] - this.x <= 30 && ninjaPos[0] - this.x >= 0 && abs(ninjaPos[1] - this.y) <= 29) {
+        canMoveLeft = false;
+    } else {
+        canMoveLeft = true;
+    }
+    if(this.x - ninjaPos[0] <= 15 && this.x - ninjaPos[0] >= 0 && abs(ninjaPos[1] - this.y) <= 29) {
+        canMoveRight = false;
+    } else {
+        canMoveRight = true;
+    }
+    if(this.y - ninjaPos[1] <= 30 && this.y - ninjaPos[1] >= 0 && abs(ninjaPos[0] - this.x) <= 30) {
+        canFall = false;
+    } else {
+        canFall = true;
+    }
+};
+Block.prototype.draw = function() {
+    rectMode(CENTER);
+    fill(0, 0, 0);
+    rect(this.x, this.y, 30, 30);
+};
+
 /* --- SLIDES --- */
 var menu = function() {
     textFont(createFont("Tahoma Bold"));
@@ -111,8 +188,10 @@ var menu = function() {
     popMatrix();
     fill(255, 0, 0, 125);
     rect(95, 26, 298, 124);
-    fill(255, 255, 255);
     textSize(45);
+    fill(0, 0, 0);
+    text("Shadows Of\nSeven", 242, 88);
+    fill(255, 255, 255);
     text("Shadows Of\nSeven", 245, 86);
     fill(255, 255, 255);
     stroke(0, 0, 0);
@@ -123,29 +202,8 @@ var menu = function() {
     button(320, 250, 130, 33, 10, "Play", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 290, 130, 33, 10, "Options", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 330, 130, 33, 10, "Credits", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
+    menuNinja.draw();
     rectMode(CORNER);
-    fill(0, 0, 0);
-    noStroke();
-    pushMatrix();
-        rotate(11);
-        rect(158, 202, 60, 60, 10);
-        fill(255, 255, 255);
-        ellipse(174, 230, 10, 10);
-        ellipse(199, 230, 10, 10);
-        fill(255, 0, 0);
-        rect(158, 208, 60, 10);
-        fill(255, 0, 0);
-        translate(56, 142);
-        triangle(97, 98, 102, 73, 88, 56);
-    popMatrix();
-    pushMatrix();
-        rotate(11);
-        translate(51, 177);
-        fill(255, 255, 255);
-        rect(30, 30, 60, 3);
-        rect(30, 50, 45, 3);
-        rect(30, 70, 60, 3);
-    popMatrix();
     fill(0, 0, 0, 100);
     pushMatrix();
         translate(1, 267);
@@ -189,21 +247,59 @@ var credits = function() {
     button(70, 370, 130, 33, 10, "Back", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
 };
 var level01 = function() {
-    background(0, 0, 0);
+    waitDelay-=2;
+    background(110, 110, 110);
+    
+    noStroke();
+    fill(66, 66, 66);
+    rect(0, 250, 400, 200);
+    
+    var ninja1 = new Ninja(1, ninjaPos[0], ninjaPos[1], 50, 0);
+    ninja1.draw();
+    
+    var block2 = new Block(230, 280);
+    block2.draw();
+    var block3 = new Block(170, 280);
+    block3.draw();
+    var block4 = new Block(140, 280);
+    block4.draw();
+    var block5 = new Block(260, 280);
+    block5.draw();
+    var block6 = new Block(260, 250);
+    block6.draw();
+    var block7 = new Block(140, 250);
+    block7.draw();
+    var block1 = new Block(200, 280);
+    block1.draw();
+    
+    textFill = "Physics Engine Test";
+    if(textScroller.length !== textFill.length && frameCount % 3 === 0 && waitDelay < 0) {
+        textScroller += textFill[textEff];
+    }
+    fill(0, 0, 0, 255);
+    textSize(30);
+    text(textScroller, 200, 100);
+    
+    rectMode(CORNER);
+    fill(0, 0, 0, waitDelay);
+    rect(0, 0, 400, 400);
+    if(textEff !== textFill.length && frameCount % 3 === 0 && waitDelay < 0) {
+        textEff++;
+    }
 }; // Draw the first level in here
 
-/* --- RENDERING AND INPUT --- */
+/* --- INPUT --- */
 keyPressed = function() {
     keys[keyCode] = true;
 };
-keyPressed = function() {
+keyReleased = function() {
     keys[keyCode] = false;
 };
 mouseReleased = function() {
     switch(mouseOverButton) {
-        case "Play": // Change this to correspond with the button text of the button you want to perform the action on.
-            gameStateNumber = 3; // Do action here for the corresponding button.
-            break; // Copy-and-paste more of the case...break scenarios if you want more button actions.
+        case "Play":
+            gameStateNumber = 3;
+            break;
         case "Options":
             gameStateNumber = 1;
             break;
@@ -366,7 +462,6 @@ var logo = function(x, y, sc, r){
 
 /* --- DRAW --- */
 draw = function() {
-    
     textFont(createFont("Tahoma Bold"));
     time++;
     angleMode = "degrees";
@@ -386,6 +481,17 @@ draw = function() {
     }
     if(time > 500){
         loaded = true;
+    }
+    if(gameStateNumber !== 0) {
+        if(canFall) {
+            ninjaPos[1]+=2;
+        }
+        if(canMoveLeft && keys[37] === true) {
+            ninjaPos[0]-=2;
+        }
+        if(canMoveRight && keys[39] === true) {
+            ninjaPos[0]+=2;
+        }
     }
     if(loaded === true){
         switch(gameStateNumber) {
