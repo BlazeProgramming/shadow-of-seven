@@ -3,8 +3,11 @@
  * Created on Saturday, September 12th, 2015
  * Made by Indie and his awesome partners
  * 
- * Thanks to KCF for the boilerplate on GitHub
+ * Thanks to KCF for the boilerplate on GitHub. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
  * Want to join ____________? Simply go here: https://www.khanacademy.org/computer-programming/indies-collaboration-team/6679584874561536
+ * 
+ * Thank you SO MUCH Emory for his Disaster Studios logo. You are an amazing coder, like everyone else on KA. Check out his programs here: https://www.khanacademy.org/profile/DisasterStudios2/ 
+ * 
  */
 
 /* --- GLOBAL VARIABLES --- */
@@ -88,25 +91,30 @@ var homeScreenDrop = function(homeScrBackground) {
 
 /* --- SLIDES --- */
 var menu = function() {
+    textFont(createFont("Tahoma Bold"));
     rectMode(CORNER);
     background(0, 200, 200);
     noStroke();
     homeScreenDrop();
-    
-    fill(255, 0, 0, 150);
+    fill(255, 255, 255);
+    pushMatrix();
+        translate(50, 120);
+        rotate(-30);
+        textSize(20 + sin(frameCount* 15) * 1.5);
+        fill(255, 140, 140);
+        text("WITH\nLOGO!!", 0, 0);
+    popMatrix();
+    fill(255, 0, 0, 125);
     rect(95, 26, 298, 124);
-    textFont(createFont("Tahoma Bold"));
+    fill(255, 255, 255);
     textSize(45);
-    fill(0);
-    text("Shadows Of\nSeven", 242, 88);
-    fill(255);
     text("Shadows Of\nSeven", 245, 86);
     fill(255, 255, 255);
     stroke(0, 0, 0);
     rect(6, 164, 390, 30);
     textSize(20);
     fill(0, 0, 0);
-    text("A GAME by Indie Productions", 201, 178);
+    text("A GAME by Indie Productions", 201, 180);
     button(320, 250, 130, 33, 10, "Play", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 290, 130, 33, 10, "Options", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 330, 130, 33, 10, "Credits", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
@@ -171,7 +179,7 @@ var credits = function() {
     text("Credits", 201, 50);
     
     textSize(20);
-    text("Thanks to my collab team for helping\nme design the game. Here is a list\nof the people who did:\nSatisifed Soul, KCF, codeWizard, Elijah,\nEmory, KingKhan007, Ignatio,\nJavaLava, Julian, Muhib Hussain, and\nRobot.\n\nEveryone else is listed on the collab\nsite,", 201, 220);
+    text("Thanks to my collab team for helping\nme design the game. Here is a list\nof the people who did:\nSatisifed Soul, KCF, codeWizard, Elijah,\nEmory, KingKhan007, Ignatio,\nJavaLava, Julian, Muhib Hussain,\nRobot and Fazbear! \n\nEveryone else is listed on the collab\nsite,", 201, 220);
     
     button(70, 370, 130, 33, 10, "Back", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
 };
@@ -202,19 +210,192 @@ mouseReleased = function() {
             break;
     }
 };
+
+/* --- BEGINNING LOGO --- */
+var txtColor1 = 0;
+var loaded = false;
+var time = 0;
+var roundTri = function(ax, ay, bx, by, cx, cy, curvatureRadius, gBuf) {
+    /* Handle the opted-out parameter */
+    if (gBuf === undefined) {
+        gBuf = this;
+        if (! gBuf.beginDraw) {
+            return;
+        }
+    }
+    var ab = dist(ax, ay, bx, by);
+    var bc = dist(bx, by, cx, cy);
+    var ac = dist(ax, ay, cx, cy);
+    /* Sanity check */
+    if (curvatureRadius <= 0 || ab === 0 || bc === 0 || ac === 0) {
+        /* Let Processingjs handle the degenerate case */
+        gBuf.triangle(ax, ay, bx, by, cx, cy);
+        return;
+    }
+    var p = [];  /* points array */
+    p.push({
+        x: ax,
+        y: ay,
+        next_dist: ab,  /* distance to the next tri point */
+        dx: bx - ax,    /* signed delta x to next x coordinate */
+        dy: by - ay,
+        /* each point of the triangle has two associate vertices */
+        next_x: 0,  /* coord along the line to next tri point */
+        next_y: 0,
+        prev_x: 0,  /* coord along the line to prev tri point */
+        prev_y: 0
+    });
+    p.push({ x: bx, y: by, next_dist: bc,
+        dx: cx - bx, dy: cy - by });
+    p.push({ x: cx, y: cy, next_dist: ac,
+        dx: ax - cx, dy: ay - cy });
+    
+    /*
+     * Computes and sets the vertices around the
+     * triangle point p[A].
+     */
+    var triVertex = function(A) {
+        var d;
+        var C = (A + 2) % 3;  /* "prev" triangle point's index */
+        var theta = atan2(p[A].dy, p[A].dx);  /* x-axis to AB */
+        var gamma = atan2(-p[C].dy, -p[C].dx);  /* x-axis to AC */
+        var alpha = (gamma - theta);    /* measure of angle BAC */
+        alpha /= 2;  /* measure of bisected angle BAC */
+        var i = abs(curvatureRadius / sin(alpha));
+        
+        d = p[A].next_dist;
+        p[A].next_x = p[A].x + i/d * p[A].dx;
+        p[A].next_y = p[A].y + i/d * p[A].dy;
+        
+        d = p[C].next_dist;
+        p[A].prev_x = p[A].x - i/d * p[C].dx;
+        p[A].prev_y = p[A].y - i/d * p[C].dy;
+    };
+    
+    /*
+     * Now compute, then draw the vertices of the
+     * rounded triangle
+     */
+    gBuf.beginShape();
+    for (var i = 0; i < p.length; i++) {
+        triVertex(i);
+        gBuf.vertex(p[i].prev_x, p[i].prev_y);
+        gBuf.bezierVertex(p[i].x, p[i].y, p[i].x, p[i].y,
+            p[i].next_x, p[i].next_y);
+    }
+    gBuf.endShape(CLOSE);
+};
+var fire = function(x, y, s, a){
+    var colors = [color(255, 0, 0), color(255, 64, 0), color(255, 128, 0), color(255, 192, 0), color(255, 255, 0)];
+    noStroke();
+    pushMatrix();
+    translate(x, y);
+    rotate(a);
+    scale(s/10/3);
+    for (var i = 0; i < 5; i++){
+        fill(colors[i]);
+        roundTri(-16+i, 0, -4-i, 0, -10, -10+i, 2);
+        roundTri(-6+i, 0, 6-i, 0, 0, -10+i, 2);
+        roundTri(4+i, 0, 16-i, 0, 10, -10+i, 2);
+    }
+    popMatrix();
+}; // Fire function
+var d = function(x, y, s){
+    pushMatrix();
+    
+    translate(x, y);
+    scale(s/180);
+    noFill();
+    // Make the D arc
+    stroke(150, 124, 32);
+    strokeWeight(20);
+    arc(0, 0, 180, 180, -89, 90);
+    // Make the D line
+    strokeWeight(20);
+    line(0, -180/2, 0, 180/2);
+    stroke(217, 176, 41);
+    strokeWeight(3);
+    // In between lines to give wood texture
+    arc(0, 0, 190, 185, -89, 90);
+    arc(0, 0, 180, 175, -89, 90);
+    line(0, -180/2, 0, 180/2);
+    popMatrix();
+    // That D's on fire!
+    
+    //fire(x+s/4, y-s*2/5, s/2, 23);
+    //fire(x+s/4, y-s*2/5, s/2, 25);
+    fire(x+s/4, y-s*2/5, s/2, 28);
+}; // Draw the D for Disaster
+var s = function(x, y, s, r){
+    pushMatrix();
+    translate(x, y-90);
+    scale(s/180);
+    rotate(r);
+    strokeWeight(20);
+    noFill();
+    // Make a top arc and a bottom arc for the S
+    stroke(150, 124, 32);
+    arc(0, 45, 90, 90, -270, -40);
+    arc(0, 135, 90, 90, -90, 140);
+    stroke(217, 176, 41);
+    strokeWeight(3);
+    // Lines in between to give a wood texture
+    arc(0, 45, 100, 90, -270, -40);
+    arc(0, 135, 84, 90, -90, 140);
+    arc(0, 45, 80, 76, -270, -40);
+    arc(0, 135, 102, 104, -90, 140);
+    // Wonky nail
+    strokeWeight(2);
+    stroke(212, 212, 212);
+    line(0, 5, 4, 0);
+    line(10, -1, 4, 0);
+    fill(212, 212, 212);
+    ellipse(10, 0, 5, 5);
+    popMatrix();
+}; // Draw the S for Studios
+var logo = function(x, y, sc, r){
+    angleMode = "degrees";
+    d(x-sc/2, y, sc);
+    s(x+sc/2, y, sc, r);
+}; // Draw all of it
+
+/* --- DRAW --- */
 draw = function() {
-    switch(gameStateNumber) {
-        case 0: // When gameStateNumber equals 0, draw the menu, this is by default
-            menu();
-            break;
-        case 1:
-            help();
-            break;
-        case 2:
-            credits();
-            break;
-        case 3: // When gameStateNumber equals 3, draw the first level
-            level01();
-            break;
+    
+    textFont(createFont("Tahoma Bold"));
+    time++;
+    angleMode = "degrees";
+    noStroke();
+    fill(0, 0, 0, 200);
+    rect(0, 0, width, height);
+    pushMatrix();
+    logo(180, 200, 200/*+sin(frameCount*4)*10*/, sin(frameCount*4)*(1000/frameCount));
+    popMatrix();
+    fill(txtColor1);
+    textAlign(CENTER, CENTER);
+    textSize(45);
+    text("Disaster Studios", 201, 360);
+    txtColor1+=0.3;
+    if(txtColor1 > 255){
+        txtColor1 = 255;
+    }
+    if(time > 500){
+        loaded = true;
+    }
+    if(loaded === true){
+        switch(gameStateNumber) {
+            case 0: // When gameStateNumber equals 0, draw the menu, this is by default
+                menu();
+                break;
+            case 1:
+                help();
+                break;
+            case 2:
+                credits();
+                break;
+            case 3: // When gameStateNumber equals 3, draw the first level
+                level01();
+                break;
+        }
     }
 };
