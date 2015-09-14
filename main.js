@@ -104,6 +104,27 @@ var homeScreenDrop = function(homeScrBackground) {
 
 };
 
+/* --- OBSTACLES --- */
+var blocks = [];
+var Block = function(x, y) {
+    this.x = x; 
+    this.y = y;
+};
+Block.prototype.draw = function() {
+    rectMode(CENTER);
+    noStroke();
+    fill(0, 0, 0);
+    rect(this.x, this.y, 30, 30);
+};
+var addBlock = function(x, y) {
+    blocks.push(new Block(x, y));
+};
+var drawBlocks = function() {
+    for (var i = 0; i < blocks.length; i++) {
+        blocks[i].draw();
+    }
+};
+
 /* --- NINJAS --- */
 var ninjaPos = {
     x: 200, 
@@ -152,42 +173,26 @@ Ninja.prototype.draw = function() {
     this.collideWith();
 };
 Ninja.prototype.collideWith = function() {
-    if(ninjaPos.x - this.x <= 30 && ninjaPos.x - this.x >= 0 && abs(ninjaPos.y - this.y) <= 29) {
-        canMoveLeft = false;
-    } else {
-        canMoveLeft = true;
-    }
-    if(this.x - ninjaPos.x <= 15 && this.x - ninjaPos.x >= 0 && abs(ninjaPos.y - this.y) <= 29) {
-        canMoveRight = false;
-    } else {
-        canMoveRight = true;
-    }
-    if(this.y - ninjaPos.y <= 30 && this.y - ninjaPos.y >= 0 && abs(ninjaPos.x - this.x) <= 30) {
-        canFall = false;
-    } else {
-        canFall = true;
+    for(var i = 0; i < blocks.length; i++) {
+        var o = blocks[i];
+        if(ninjaPos.x - o.x <= 30 && ninjaPos.x - o.x >= 0 && abs(ninjaPos.y - o.y) <= 29) {
+            canMoveLeft = false;
+        } else {
+            canMoveLeft = true;
+        }
+        if(o.x - ninjaPos.x <= 15 && o.x - ninjaPos.x >= 0 && abs(ninjaPos.y - o.y) <= 29) {
+            canMoveRight = false;
+        } else {
+            canMoveRight = true;
+        }
+        if(o.y - ninjaPos.y <= 30 && o.y - ninjaPos.y >= 0 && abs(ninjaPos.x - o.x) <= 30) {
+            canFall = false;
+        } else {
+            canFall = true;
+        }
     }
 };
 var menuNinja = new Ninja(1, 135, 265, 100, 11, true);
-var blocks = [];
-var Block = function(x, y) {
-    this.x = x; 
-    this.y = y;
-};
-Block.prototype.draw = function() {
-    rectMode(CENTER);
-    noStroke();
-    fill(0, 0, 0);
-    rect(this.x, this.y, 30, 30);
-};
-var addBlock = function(x, y) {
-    blocks.push(new Block(x, y));
-};
-var drawBlocks = function() {
-    for (var i = 0; i < blocks.length; i++) {
-        blocks[i].draw();
-    }
-};
 
 /* --- SLIDES --- */
 var menu = function() {
@@ -475,7 +480,7 @@ mouseReleased = function() {
 /* --- DRAW --- */
 draw = function() {
     frameRate(60);
-    if(gameStateNumber !== 0) {
+    if(gameStateNumber >= 4) {
         if(canFall) {
             ninjaPos.y+=2;
         }
