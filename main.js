@@ -3,8 +3,8 @@
  * Created on Saturday, September 12th, 2015
  * Made by Indie and his awesome partners
  * 
- * Thanks to KCF for the boilerplate, KCF.JS for some visual effects, and a lot of the game mechanics. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
- * Thanks SO MUCH to Emory for his Disaster Studios logo. You are an amazing coder, like everyone else on KA. Check out his programs here: https://www.khanacademy.org/profile/DisasterStudios2/ 
+ * Thanks to KCF for the boilerplate, KCF.JS for some visual effects, and a lot of the game mechanics and physics engine. Check out his programs here: https://www.khanacademy.org/profile/kingcodefish/
+ * Thanks to Emory for the original Disaster Studios idea. Check out his programs here: https://www.khanacademy.org/profile/DisasterStudios2/ 
  * 
  * Want to join ____________? Simply go here: https://www.khanacademy.org/computer-programming/indies-collaboration-team/6679584874561536
  * 
@@ -14,6 +14,9 @@
 var gameStateNumber = 0;
 var keys = [];
 var mouseOverButton = "";
+var txtColor1 = 0;
+var txtColorFin = 255;
+var time = 0;
 var waitDelay = 255;
 var textScroller = "";
 var textFill = "";
@@ -102,6 +105,7 @@ var homeScreenDrop = function(homeScrBackground) {
 };
 
 /* --- NINJAS --- */
+var ninjaPos = [200, 200];
 var Ninja = function(ninjaType, x, y, size, rot, speedMarks) {
     this.ninjaType = ninjaType;
     this.x = x;
@@ -143,12 +147,7 @@ Ninja.prototype.draw = function() {
             break;
     }
 };
-var ninjaPos = [200, 200];
-var menuNinja = new Ninja(1, 135, 265, 100, 11, true);
-var Block = function(x, y) {
-    this.x = x;
-    this.y = y;
-    
+/*Ninja.prototype.collideWith = function() {
     if(ninjaPos[0] - this.x <= 30 && ninjaPos[0] - this.x >= 0 && abs(ninjaPos[1] - this.y) <= 29) {
         canMoveLeft = false;
     } else {
@@ -164,11 +163,26 @@ var Block = function(x, y) {
     } else {
         canFall = true;
     }
+};*/
+var menuNinja = new Ninja(1, 135, 265, 100, 11, true);
+var blocks = [];
+var Block = function(x, y) {
+    this.x = x; 
+    this.y = y;
 };
 Block.prototype.draw = function() {
     rectMode(CENTER);
+    noStroke();
     fill(0, 0, 0);
     rect(this.x, this.y, 30, 30);
+};
+var addBlock = function(x, y) {
+    blocks.push(new Block(x, y));
+};
+var drawBlocks = function() {
+    for (var i = 0; i < blocks.length; i++) {
+        blocks[i].draw();
+    }
 };
 
 /* --- SLIDES --- */
@@ -227,7 +241,6 @@ var help = function() {
     fill(255);
     text("Help", 201, 50);
     
-    
     textSize(30);
     text("Write Text Here", 201, 201);
     
@@ -252,44 +265,176 @@ var credits = function() {
     button(70, 370, 130, 33, 10, "Back", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
 };
 var level01 = function() {
-    waitDelay-=2;
-    background(110, 110, 110);
-    
-    noStroke();
-    fill(66, 66, 66);
-    rect(0, 250, 400, 200);
-    
-    var ninja1 = new Ninja(1, ninjaPos[0], ninjaPos[1], 50, 0);
-    ninja1.draw();
-    
-    var block2 = new Block(230, 280);
-    block2.draw();
-    var block3 = new Block(170, 280);
-    block3.draw();
-    var block4 = new Block(140, 280);
-    block4.draw();
-    var block5 = new Block(260, 280);
-    block5.draw();
-    var block6 = new Block(260, 250);
-    block6.draw();
-    var block7 = new Block(140, 250);
-    block7.draw();
-    var block1 = new Block(200, 280);
-    block1.draw();
-    
-    textFill = "Physics Engine Test";
-    if(textScroller.length !== textFill.length && frameCount % 3 === 0 && waitDelay < 0) {
-        textScroller += textFill[textEff];
-    }
-    fill(0, 0, 0, 255);
+    var xx = -40,
+        yy = 318;
+    txtColor1++;
+    time++;
+    background(0, 0, 0);
+    fill(txtColor1);
     textSize(30);
-    text(textScroller, 200, 100);
-    
-    rectMode(CORNER);
-    fill(0, 0, 0, waitDelay);
-    rect(0, 0, 400, 400);
-    if(textEff !== textFill.length && frameCount % 3 === 0 && waitDelay < 0) {
-        textEff++;
+    text("You wake up to find \nyourself in a cell...", 201, 48);
+    if(time > 250){
+        fill(255, 255, 255);
+        text("\"Where am I?\"", 201, 205);
+    }
+    if(time > 400){
+        background(168, 168, 168);
+        for (var j = 0; j < 14; j++) {
+            for (var i = 0; i < 12; i++) {
+                fill(158, 158, 158);
+                rect(i*36, j*30, 33, 26);
+            }
+        }
+        fill(0, 0, 0);
+        noStroke();
+        pushMatrix();
+            rotate(0);
+            scale(0.7, 0.7);
+            translate(204, 267);
+            rect(158, 202, 60, 60, 10);
+            fill(255, 255, 255);
+            ellipse(174, 230, 10, 10);
+            ellipse(199, 230, 10, 10);
+            fill(255, 0, 0);
+            rect(158, 208, 60, 10);
+            fill(255, 0, 0);
+            translate(56, 142);
+            triangle(97, 98, 102, 73, 88, 56);
+        popMatrix();
+            fill(0, 0, 0);
+            rect(228, 280, 12, 106);
+            rect(280, 280, 12, 106);
+            rect(332, 280, 12, 106);
+            rect(387, 280, 12, 106);
+            fill(97, 97, 97);
+            rect(0, 371, 400, 30);
+            rect(228, 264, 175, 20);
+        pushMatrix();
+            translate(0, -118);
+            fill(255, 255, 255);
+            rect(260, 342, 40, 40, 10);
+            fill(0, 0, 0);
+            ellipse(280, 358, 20, 20);
+            fill(0, 0, 0);
+            rect(228, 280, 12, 106);
+            rect(280, 280, 12, 106);
+            rect(332, 280, 12, 106);
+            rect(387, 280, 12, 106);
+            fill(97, 97, 97);
+            rect(228, 264, 175, 20);
+        popMatrix();
+    }
+    if(time > 500){
+        fill(255, 255, 255);
+        textSize(20);
+        text("Hey, new blood. Let's get out of here.\nThe city is under attack and no guards\nare here. Come on!", 201, 84);
+        pushMatrix();
+        rotate(-36);
+        rect(30, 186, 5, 131);
+        popMatrix();
+    }   
+    if(time > 700){
+        xx+=200;
+        fill(0, 0, 0);
+        rect(xx, yy, 40, 40, 10);
+        fill(255, 0, 0);
+        rect(xx, yy+22, 11, 18);
+        rect(xx+29, yy+22, 11, 18);
+        fill(255, 255, 255);
+        ellipse(xx+10, yy+10, 10, 10);
+        ellipse(xx+29, yy+10, 10, 10);
+        fill(255, 255, 255);
+        text("Hey, you two, stay \nhere, I'm going to \nthe bathroom.", xx+-57, 274);
+    }
+    if(time > 900){
+        rectMode(CORNER);
+        background(168, 168, 168);
+        for (var j = 0; j < 14; j++) {
+            for (var i = 0; i < 12; i++) {
+                fill(158, 158, 158);
+                rect(i*36, j*30, 33, 26);
+            }
+        }
+        fill(0, 0, 0);
+        noStroke();
+        pushMatrix();
+            rotate(0);
+            scale(0.7, 0.7);
+            translate(204, 267);
+            rect(158, 202, 60, 60, 10);
+            fill(255, 255, 255);
+            ellipse(174, 230, 10, 10);
+            ellipse(199, 230, 10, 10);
+            fill(255, 0, 0);
+            rect(158, 208, 60, 10);
+            fill(255, 0, 0);
+            translate(56, 142);
+            triangle(97, 98, 102, 73, 88, 56);
+        popMatrix();
+            fill(0, 0, 0);
+            rect(228, 280, 12, 106);
+            rect(280, 280, 12, 106);
+            rect(332, 280, 12, 106);
+            rect(387, 280, 12, 106);
+            fill(97, 97, 97);
+            rect(0, 371, 400, 30);
+            rect(228, 264, 175, 20);
+        pushMatrix();
+            translate(0, -118);
+            fill(255, 255, 255);
+            rect(260, 342, 40, 40, 10);
+            fill(0, 0, 0);
+            ellipse(280, 358, 20, 20);
+            fill(0, 0, 0);
+            rect(228, 280, 12, 106);
+            rect(280, 280, 12, 106);
+            rect(332, 280, 12, 106);
+            rect(387, 280, 12, 106);
+            fill(97, 97, 97);
+            rect(228, 264, 175, 20);
+        popMatrix();
+    }
+    if(time > 1000){
+        fill(255, 255, 255);
+        textSize(20);
+        text("Told ya. Now lemme just open this\nlock. ", 201, 84);
+        pushMatrix();
+        rotate(-36);
+        rect(30, 186, 5, 131);
+        popMatrix();
+    }   
+    if(time > 1100){
+        text("There we go!", 105, 228);
+        
+        fill(0, 0, 0, time - 1200);
+        rect(0, 0, 400, 400);
+    }
+    if(time > 1455) {
+        rectMode(CENTER);
+        background(82, 82, 82);
+        noStroke();
+        
+        var ninja1 = new Ninja(1, ninjaPos[0], ninjaPos[1], 50, 0);
+        ninja1.draw();
+        
+        // Blocks
+        addBlock(200, 250);
+        
+        textFill = "Physics Engine Test";
+        if(textScroller.length !== textFill.length && frameCount % 3 === 0) {
+            textScroller += textFill[textEff];
+        }
+        fill(255, 255, 255);
+        textSize(30);
+        text(textScroller, 200, 100);
+        
+        rectMode(CORNER);
+        fill(0, 0, 0, -time + 1710);
+        rect(0, 0, 400, 400);
+        
+        if(textEff !== textFill.length && frameCount % 3 === 0) {
+            textEff++;
+        }
     }
 }; // Draw the first level in here
 
@@ -317,201 +462,31 @@ mouseReleased = function() {
     }
 };
 
-/* --- BEGINNING LOGO --- */
-var txtColor1 = 0;
-var loaded = false;
-var time = 0;
-var roundTri = function(ax, ay, bx, by, cx, cy, curvatureRadius, gBuf) {
-    /* Handle the opted-out parameter */
-    if (gBuf === undefined) {
-        gBuf = this;
-        if (! gBuf.beginDraw) {
-            return;
-        }
-    }
-    var ab = dist(ax, ay, bx, by);
-    var bc = dist(bx, by, cx, cy);
-    var ac = dist(ax, ay, cx, cy);
-    /* Sanity check */
-    if (curvatureRadius <= 0 || ab === 0 || bc === 0 || ac === 0) {
-        /* Let Processingjs handle the degenerate case */
-        gBuf.triangle(ax, ay, bx, by, cx, cy);
-        return;
-    }
-    var p = [];  /* points array */
-    p.push({
-        x: ax,
-        y: ay,
-        next_dist: ab,  /* distance to the next tri point */
-        dx: bx - ax,    /* signed delta x to next x coordinate */
-        dy: by - ay,
-        /* each point of the triangle has two associate vertices */
-        next_x: 0,  /* coord along the line to next tri point */
-        next_y: 0,
-        prev_x: 0,  /* coord along the line to prev tri point */
-        prev_y: 0
-    });
-    p.push({ x: bx, y: by, next_dist: bc,
-        dx: cx - bx, dy: cy - by });
-    p.push({ x: cx, y: cy, next_dist: ac,
-        dx: ax - cx, dy: ay - cy });
-    
-    /*
-     * Computes and sets the vertices around the
-     * triangle point p[A].
-     */
-    var triVertex = function(A) {
-        var d;
-        var C = (A + 2) % 3;  /* "prev" triangle point's index */
-        var theta = atan2(p[A].dy, p[A].dx);  /* x-axis to AB */
-        var gamma = atan2(-p[C].dy, -p[C].dx);  /* x-axis to AC */
-        var alpha = (gamma - theta);    /* measure of angle BAC */
-        alpha /= 2;  /* measure of bisected angle BAC */
-        var i = abs(curvatureRadius / sin(alpha));
-        
-        d = p[A].next_dist;
-        p[A].next_x = p[A].x + i/d * p[A].dx;
-        p[A].next_y = p[A].y + i/d * p[A].dy;
-        
-        d = p[C].next_dist;
-        p[A].prev_x = p[A].x - i/d * p[C].dx;
-        p[A].prev_y = p[A].y - i/d * p[C].dy;
-    };
-    
-    /*
-     * Now compute, then draw the vertices of the
-     * rounded triangle
-     */
-    gBuf.beginShape();
-    for (var i = 0; i < p.length; i++) {
-        triVertex(i);
-        gBuf.vertex(p[i].prev_x, p[i].prev_y);
-        gBuf.bezierVertex(p[i].x, p[i].y, p[i].x, p[i].y,
-            p[i].next_x, p[i].next_y);
-    }
-    gBuf.endShape(CLOSE);
-};
-var fire = function(x, y, s, a){
-    var colors = [color(255, 0, 0), color(255, 64, 0), color(255, 128, 0), color(255, 192, 0), color(255, 255, 0)];
-    noStroke();
-    pushMatrix();
-    translate(x, y);
-    rotate(a);
-    scale(s/10/3);
-    for (var i = 0; i < 5; i++){
-        fill(colors[i]);
-        roundTri(-16+i, 0, -4-i, 0, -10, -10+i, 2);
-        roundTri(-6+i, 0, 6-i, 0, 0, -10+i, 2);
-        roundTri(4+i, 0, 16-i, 0, 10, -10+i, 2);
-    }
-    popMatrix();
-}; // Fire function
-var d = function(x, y, s){
-    pushMatrix();
-    
-    translate(x, y);
-    scale(s/180);
-    noFill();
-    // Make the D arc
-    stroke(150, 124, 32);
-    strokeWeight(20);
-    arc(0, 0, 180, 180, -89, 90);
-    // Make the D line
-    strokeWeight(20);
-    line(0, -180/2, 0, 180/2);
-    stroke(217, 176, 41);
-    strokeWeight(3);
-    // In between lines to give wood texture
-    arc(0, 0, 190, 185, -89, 90);
-    arc(0, 0, 180, 175, -89, 90);
-    line(0, -180/2, 0, 180/2);
-    popMatrix();
-    // That D's on fire!
-    
-    //fire(x+s/4, y-s*2/5, s/2, 23);
-    //fire(x+s/4, y-s*2/5, s/2, 25);
-    fire(x+s/4, y-s*2/5, s/2, 28);
-}; // Draw the D for Disaster
-var s = function(x, y, s, r){
-    pushMatrix();
-    translate(x, y-90);
-    scale(s/180);
-    rotate(r);
-    strokeWeight(20);
-    noFill();
-    // Make a top arc and a bottom arc for the S
-    stroke(150, 124, 32);
-    arc(0, 45, 90, 90, -270, -40);
-    arc(0, 135, 90, 90, -90, 140);
-    stroke(217, 176, 41);
-    strokeWeight(3);
-    // Lines in between to give a wood texture
-    arc(0, 45, 100, 90, -270, -40);
-    arc(0, 135, 84, 90, -90, 140);
-    arc(0, 45, 80, 76, -270, -40);
-    arc(0, 135, 102, 104, -90, 140);
-    // Wonky nail
-    strokeWeight(2);
-    stroke(212, 212, 212);
-    line(0, 5, 4, 0);
-    line(10, -1, 4, 0);
-    fill(212, 212, 212);
-    ellipse(10, 0, 5, 5);
-    popMatrix();
-}; // Draw the S for Studios
-var logo = function(x, y, sc, r){
-    angleMode = "degrees";
-    d(x-sc/2, y, sc);
-    s(x+sc/2, y, sc, r);
-}; // Draw all of it
-
 /* --- DRAW --- */
 draw = function() {
-    textFont(createFont("Tahoma Bold"));
-    time++;
-    angleMode = "degrees";
-    noStroke();
-    fill(0, 0, 0, 200);
-    rect(0, 0, width, height);
-    pushMatrix();
-    logo(180, 200, 200/*+sin(frameCount*4)*10*/, sin(frameCount*4)*(1000/frameCount));
-    popMatrix();
-    fill(txtColor1);
-    textAlign(CENTER, CENTER);
-    textSize(45);
-    text("Disaster Studios", 201, 360);
-    txtColor1+=0.3;
-    if(txtColor1 > 255){
-        txtColor1 = 255;
-    }
-    if(time > 500){
-        loaded = true;
-    }
     if(gameStateNumber !== 0) {
         if(canFall) {
             ninjaPos[1]+=2;
         }
-        if(canMoveLeft && keys[37] === true) {
+        if(canMoveLeft && keys[LEFT] === true) {
             ninjaPos[0]-=2;
         }
-        if(canMoveRight && keys[39] === true) {
+        if(canMoveRight && keys[RIGHT] === true) {
             ninjaPos[0]+=2;
         }
     }
-    if(loaded === true){
-        switch(gameStateNumber) {
-            case 0: // When gameStateNumber equals 0, draw the menu, this is by default
-                menu();
-                break;
-            case 1:
-                help();
-                break;
-            case 2:
-                credits();
-                break;
-            case 3: // When gameStateNumber equals 3, draw the first level
-                level01();
-                break;
-        }
+    switch(gameStateNumber) {
+        case 0: // When gameStateNumber equals 0, draw the menu, this is by default
+            menu();
+            break;
+        case 1:
+            help();
+            break;
+        case 2:
+            credits();
+            break;
+        case 3: // When gameStateNumber equals 3, draw the first level
+            level01();
+            break;
     }
 };
