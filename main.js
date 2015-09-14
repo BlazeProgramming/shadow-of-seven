@@ -105,7 +105,10 @@ var homeScreenDrop = function(homeScrBackground) {
 };
 
 /* --- NINJAS --- */
-var ninjaPos = [200, 200];
+var ninjaPos = {
+    x: 200, 
+    y: 200
+};
 var Ninja = function(ninjaType, x, y, size, rot, speedMarks) {
     this.ninjaType = ninjaType;
     this.x = x;
@@ -146,24 +149,25 @@ Ninja.prototype.draw = function() {
             }
             break;
     }
+    this.collideWith();
 };
-/*Ninja.prototype.collideWith = function() {
-    if(ninjaPos[0] - this.x <= 30 && ninjaPos[0] - this.x >= 0 && abs(ninjaPos[1] - this.y) <= 29) {
+Ninja.prototype.collideWith = function() {
+    if(ninjaPos.x - this.x <= 30 && ninjaPos.x - this.x >= 0 && abs(ninjaPos.y - this.y) <= 29) {
         canMoveLeft = false;
     } else {
         canMoveLeft = true;
     }
-    if(this.x - ninjaPos[0] <= 15 && this.x - ninjaPos[0] >= 0 && abs(ninjaPos[1] - this.y) <= 29) {
+    if(this.x - ninjaPos.x <= 15 && this.x - ninjaPos.x >= 0 && abs(ninjaPos.y - this.y) <= 29) {
         canMoveRight = false;
     } else {
         canMoveRight = true;
     }
-    if(this.y - ninjaPos[1] <= 30 && this.y - ninjaPos[1] >= 0 && abs(ninjaPos[0] - this.x) <= 30) {
+    if(this.y - ninjaPos.y <= 30 && this.y - ninjaPos.y >= 0 && abs(ninjaPos.x - this.x) <= 30) {
         canFall = false;
     } else {
         canFall = true;
     }
-};*/
+};
 var menuNinja = new Ninja(1, 135, 265, 100, 11, true);
 var blocks = [];
 var Block = function(x, y) {
@@ -264,7 +268,7 @@ var credits = function() {
     
     button(70, 370, 130, 33, 10, "Back", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
 };
-var level01 = function() {
+var intro = function() {
     var xx = -40,
         yy = 318;
     txtColor1++;
@@ -410,31 +414,37 @@ var level01 = function() {
         rect(0, 0, 400, 400);
     }
     if(time > 1455) {
-        rectMode(CENTER);
-        background(82, 82, 82);
-        noStroke();
-        
-        var ninja1 = new Ninja(1, ninjaPos[0], ninjaPos[1], 50, 0);
-        ninja1.draw();
-        
-        // Blocks
-        addBlock(200, 250);
-        
-        textFill = "Physics Engine Test";
-        if(textScroller.length !== textFill.length && frameCount % 3 === 0) {
-            textScroller += textFill[textEff];
-        }
-        fill(255, 255, 255);
-        textSize(30);
-        text(textScroller, 200, 100);
-        
-        rectMode(CORNER);
-        fill(0, 0, 0, -time + 1710);
-        rect(0, 0, 400, 400);
-        
-        if(textEff !== textFill.length && frameCount % 3 === 0) {
-            textEff++;
-        }
+        gameStateNumber = 4;
+        time = 0;
+    }
+};
+var level01 = function() {
+    time++;
+    rectMode(CENTER);
+    background(82, 82, 82);
+    noStroke();
+    
+    var ninja1 = new Ninja(1, ninjaPos.x, ninjaPos.y, 50, 0);
+    ninja1.draw();
+    
+    // Blocks
+    addBlock(200, 250);
+    drawBlocks();
+    
+    textFill = "Physics Engine Test";
+    if(textScroller.length !== textFill.length && frameCount % 3 === 0 && time ) {
+        textScroller += textFill[textEff];
+    }
+    fill(255, 255, 255);
+    textSize(30);
+    text(textScroller, 200, 100);
+    
+    rectMode(CORNER);
+    fill(0, 0, 0, -time + 255);
+    rect(0, 0, 400, 400);
+    
+    if(textEff !== textFill.length && frameCount % 3 === 0) {
+        textEff++;
     }
 }; // Draw the first level in here
 
@@ -464,15 +474,16 @@ mouseReleased = function() {
 
 /* --- DRAW --- */
 draw = function() {
+    frameRate(60);
     if(gameStateNumber !== 0) {
         if(canFall) {
-            ninjaPos[1]+=2;
+            ninjaPos.y+=2;
         }
         if(canMoveLeft && keys[LEFT] === true) {
-            ninjaPos[0]-=2;
+            ninjaPos.x-=2;
         }
         if(canMoveRight && keys[RIGHT] === true) {
-            ninjaPos[0]+=2;
+            ninjaPos.x+=2;
         }
     }
     switch(gameStateNumber) {
@@ -486,6 +497,9 @@ draw = function() {
             credits();
             break;
         case 3: // When gameStateNumber equals 3, draw the first level
+            intro();
+            break;
+        case 4:
             level01();
             break;
     }
