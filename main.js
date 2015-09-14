@@ -138,7 +138,10 @@ var Ninja = function(ninjaType, x, y, size, rot, speedMarks) {
     this.rot = rot;
     this.speedMarks = speedMarks;
 };
-Ninja.prototype.draw = function() {
+Ninja.prototype.update = function() {
+    this.collideWith();
+};
+Ninja.prototype.display = function() {
     switch(this.ninjaType) {
         case 1:
             rectMode(CENTER);
@@ -170,7 +173,6 @@ Ninja.prototype.draw = function() {
             }
             break;
     }
-    this.collideWith();
 };
 Ninja.prototype.collideWith = function() {
     for(var i = 0; i < blocks.length; i++) {
@@ -225,7 +227,7 @@ var menu = function() {
     button(320, 250, 130, 33, 10, "Play", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 290, 130, 33, 10, "Options", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
     button(320, 330, 130, 33, 10, "Credits", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
-    menuNinja.draw();
+    menuNinja.display();
     rectMode(CORNER);
     fill(0, 0, 0, 100);
     pushMatrix();
@@ -269,7 +271,7 @@ var credits = function() {
     text("Credits", 201, 50);
     
     textSize(20);
-    text("Thanks to my collab team for helping\nme design the game. Here is a list\nof the people who did:\nSatisifed Soul, KCF, codeWizard, Elijah,\nEmory, KingKhan007, Ignatio,\nJavaLava, Julian, Muhib Hussain,\nRobot and Fazbear! \n\nEveryone else is listed on the collab\nsite,", 201, 220);
+    text("Thanks to my collab team for helping\nme design the game. Here is a list\nof the people who did:\nSatisifed Soul, KCF, codeWizard, Elijah,\nEmory, KingKhan007, Ignatio,\nJavaLava, Julian, Muhib Hussain,\nRobot, and Fazbear! \n\nEveryone else is listed on the collab\nsite,", 201, 220);
     
     button(70, 370, 130, 33, 10, "Back", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
 };
@@ -430,7 +432,8 @@ var level01 = function() {
     noStroke();
     
     var ninja1 = new Ninja(1, ninjaPos.x, ninjaPos.y, 50, 0);
-    ninja1.draw();
+    ninja1.update();
+    ninja1.display();
     
     // Blocks
     addBlock(200, 250);
