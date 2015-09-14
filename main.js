@@ -134,11 +134,25 @@ var Ninja = function(ninjaType, x, y, size, rot, speedMarks) {
     this.ninjaType = ninjaType;
     this.x = x;
     this.y = y;
+    this.xv = 0;
+    this.yv = 0;
+    this.moveSpeed = 5;
     this.size = size;
     this.rot = rot;
     this.speedMarks = speedMarks;
 };
 Ninja.prototype.update = function() {
+    if(canFall) {
+        this.yv+=this.moveSpeed;
+    }
+    if(canMoveLeft && keys[LEFT] === true) {
+        this.xv-=this.moveSpeed;
+    }
+    if(canMoveRight && keys[RIGHT] === true) {
+        this.xv+=this.moveSpeed;
+    }
+    ninjaPos.x += this.xv;
+    ninjaPos.y += this.yv;
     this.collideWith();
 };
 Ninja.prototype.display = function() {
@@ -191,6 +205,30 @@ Ninja.prototype.collideWith = function() {
             canFall = false;
         } else {
             canFall = true;
+        }
+        if( this.y + 15 > o.y && this.y < o.y + 15 && this.x + 15 > o.x && this.x < o.x + 15) {
+            // BOTTOM
+            if(this.yv > 0) {
+                this.yv = 0;
+                canFall = false;
+                this.y = o.y-15;
+            }
+            // TOP
+            if(this.yv < 0) {
+                this.yv = 0;
+                canFall = true;
+                this.y = o.y + 15;
+            }
+            // RIGHT
+            if(this.xv > 0) {
+                this.xv = 0;
+                this.x = o.x - 15;
+            }
+            // LEFT
+            if(this.xv < 0) {
+                this.xv = 0;
+                this.x = o.x + 15;
+            }
         }
     }
 };
@@ -271,7 +309,7 @@ var credits = function() {
     text("Credits", 201, 50);
     
     textSize(20);
-    text("Thanks to my collab team for helping\nme design the game. Here is a list\nof the people who did:\nSatisifed Soul, KCF, codeWizard, Elijah,\nEmory, KingKhan007, Ignatio,\nJavaLava, Julian, Muhib Hussain,\nRobot, and Fazbear! \n\nEveryone else is listed on the collab\nsite,", 201, 220);
+    text("Thanks to my collab team for helping\nme design the game. Here is a list\nof the people who did:\nSatisifed Soul, KCF, codeWizard, Elijah,\nEmory, KingKhan007, Ignatio,\nJavaLava, Julian, Muhib Hussain,\nRobot, and Fazbear! \n\nEveryone else is listed on the collab\nsite.", 201, 220);
     
     button(70, 370, 130, 33, 10, "Back", 24, color(0, 0, 0), color(82, 82, 82), color(255, 255, 255), color(200, 200, 200, 100), color(0, 0, 0, 100), 2, color(0, 0, 0, 100), 2);
 };
@@ -485,17 +523,6 @@ mouseReleased = function() {
 /* --- DRAW --- */
 draw = function() {
     frameRate(60);
-    if(gameStateNumber >= 4) {
-        if(canFall) {
-            ninjaPos.y+=5;
-        }
-        if(canMoveLeft && keys[LEFT] === true) {
-            ninjaPos.x-=5;
-        }
-        if(canMoveRight && keys[RIGHT] === true) {
-            ninjaPos.x+=5;
-        }
-    }
     switch(gameStateNumber) {
         case 0: // When gameStateNumber equals 0, draw the menu, this is by default
             menu();
