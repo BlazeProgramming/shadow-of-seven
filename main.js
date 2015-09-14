@@ -434,6 +434,8 @@ var level01 = function() {
     
     // Blocks
     addBlock(200, 250);
+    addBlock(230, 250);
+    addBlock(170, 250);
     drawBlocks();
     
     textFill = "Physics Engine Test";
@@ -482,13 +484,13 @@ draw = function() {
     frameRate(60);
     if(gameStateNumber >= 4) {
         if(canFall) {
-            ninjaPos.y+=2;
+            ninjaPos.y+=5;
         }
         if(canMoveLeft && keys[LEFT] === true) {
-            ninjaPos.x-=2;
+            ninjaPos.x-=5;
         }
         if(canMoveRight && keys[RIGHT] === true) {
-            ninjaPos.x+=2;
+            ninjaPos.x+=5;
         }
     }
     switch(gameStateNumber) {
