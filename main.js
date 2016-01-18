@@ -499,9 +499,11 @@ var level01 = function() {
 /* --- INPUT --- */
 keyPressed = function() {
     keys[keyCode] = true;
+    keys[key.toString().toUpperCase()] = true;
 };
 keyReleased = function() {
     keys[keyCode] = false;
+    keys[key.toString().toUpperCase()] = false;
 };
 mouseReleased = function() {
     switch(mouseOverButton) {
